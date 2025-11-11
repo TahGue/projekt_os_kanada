@@ -1,0 +1,69 @@
+/* Enhetlig design för Väl Godkänt */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1400px;
+    margin: auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    color: #264653;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.section {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.section h2 {
+    color: #2A9D8F;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    border-bottom: 3px solid #2A9D8F;
+    padding-bottom: 10px;
+}
+
+.dropdown {
+    width: 50%;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 2px solid #2A9D8F;
+    font-size: 16px;
+}
+
+/* Plotly graph container styling */
+.dash-graph {
+    margin-bottom: 30px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .header {
+        font-size: 1.8em;
+    }
+    
+    .dropdown {
+        width: 100%;
+    }
+}
+
