@@ -1,0 +1,61 @@
+# Video Presentation Outline – Projekt OS
+
+## 1. Intro (30–45 sek)
+- Presentera dig själv och din roll: "Hej, jag heter [ditt namn]. Jag arbetade med dashboarden och visualiseringarna i Projekt OS tillsammans med Kokchun Giang och Raphael Korsoski."
+- Kort om projektets syfte: "Vi analyserar 120 år av OS-data för att skapa en interaktiv dashboard som svarar på frågor om länder och sporter."
+
+## 2. Dataset & Setup (45 sek)
+- Beskriv datasetet (Kaggle – 120 years of Olympic history, 1896–2016, 271k rader).
+- Nämn att ni anonymiserar namn med SHA-256 (GDPR-koppling).
+- Visa kort hur datan laddas via `data_loader.py` och hur `OlympicAnalyzer`-klassen strukturerar analyserna.
+
+## 3. Uppgift 0 – Explorativ analys (1 min)
+- Visa notebooken "01_exploratory_analysis.ipynb":
+  - Antal länder, sporter, medaljtyper.
+  - Åldersstatistik (medel, median, min/max, std).
+  - Visualiseringar: könsfördelning, topp 10 medalj-länder, medaljer över tid, åldershistogram.
+- Motivera varför dessa plots behövdes (insikt i helheten + krav från uppgiften).
+
+## 4. Uppgift 1 – Landstatistik (CAN) (1–1.5 min)
+- Gå igenom dashboard-sektionen "Uppgift 1: Landstatistik".
+- Visa hur användaren väljer land (default CAN) och får:
+  - Topp-sporter (bar chart med viridis).
+  - Medaljer per OS (linjeplot med marker design).
+  - Åldershistogram.
+  - Medaljtyp-fördelning.
+- Förklara att datan bygger på `OlympicAnalyzer` metoder och att interaktiviteten kommer från Dash callbacks.
+
+## 5. Uppgift 2 – Sportstatistik (1 min)
+- Demonstrera sport-dropdownen och de fyra graferna (medaljer per land, åldrar, kön, medaljtyper).
+- Motivera varför denna uppsättning ger en heltäckande bild av sporten.
+- Peka ut att datasetets filter/aggregation görs i `sport_analysis` metoden.
+
+## 6. Förbättrad Kanada 3D-visualisering (Spotlight) (1 min)
+- Highlighta "Spotlight: Kanada i 3D"-sektionen:
+  - 3D-plot med Age/Height/Weight, animation över år, färger/sizes per medalj.
+  - Hur filtreringskontroller (säsong, medaljer, år) fungerar.
+  - Varför detta lyfter storytelling (se atleternas profiler utvecklas över tid).
+
+## 7. Global Medaljrace (45 sek)
+- Visa "Global Medaljracet"-sektionen med animerad top-N bar chart per år.
+- Förklara reglagen (säsong, top-N) och vad användaren lär sig.
+
+## 8. Teknik & designval (45 sek)
+- Kort om:
+  - Dash layout + `assets/style.css` (enhetlig design, cards, grid).
+  - Färgskalor (Viridis/Plasma, medaljkulörer).
+  - Struktur (modulär `src/`, tydliga callbacks, återanvändbara analyser).
+
+## 9. Deploy & repo (30 sek)
+- Nämn att appen kan köras lokalt (`python -m src.dashboard`) och deployas via Render/Procfile.
+- Visa GitHub-repot och `.gitignore`, `CITATIONS.md` (källhänvisningar).
+
+## 10. Avslutning (30 sek)
+- Summera vad du visat och hur dashboarden svarar på projektets frågeställningar.
+- Tacka och hänvisa till länklistan (GitHub, video, deployad app) för inlämningen.
+
+> **Tips:**
+> - Håll tonen professionell men engagerad.
+> - Zooma in på viktiga grafer när du pratar om dem.
+> - Använd OBS/Teams för att spela in både skärm och dig själv.
+> - Säkra ljud och tempo (5–10 minuter totalt).

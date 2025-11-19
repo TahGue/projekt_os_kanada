@@ -2,6 +2,7 @@
 # Documentation: https://dash.plotly.com/
 # Version: 2.14.2
 from dash import Dash, html, dcc, Input, Output
+import dash_bootstrap_components as dbc
 
 # Plotly Express for data visualization
 # Documentation: https://plotly.com/python/plotly-express/
@@ -13,8 +14,14 @@ from .data_loader import load_and_anonymize_data
 from .data_processor import OlympicAnalyzer
 import os
 
-# Skapa app med enhetlig design
-app = Dash(__name__, external_stylesheets=['/assets/style.css'])
+# Skapa app med Bootstrap-tema (BOOTSTRAP för responsiv design)
+app = Dash(
+    __name__, 
+    external_stylesheets=[
+        dbc.themes.BOOTSTRAP,  # Bootstrap 5 styling
+        dbc.icons.FONT_AWESOME  # Ikoner (valfritt)
+    ]
+)
 app.title = "Olympic Games Analysis"
 
 # Ladda data
@@ -26,179 +33,228 @@ year_min = int(df['Year'].min())
 year_max = int(df['Year'].max())
 year_marks = {year: str(year) for year in range(year_min, year_max + 1, 8)}
 
-# Layout - användarvänlig och enhetlig design
-app.layout = html.Div([
-    html.H1("Olympiska Spelen - Analys Dashboard", className='header'),
+# Layout med Bootstrap komponenter
+app.layout = dbc.Container([
+    # Header med Bootstrap
+    dbc.Row([
+        dbc.Col([
+            html.H1("Olympiska Spelen - Analys Dashboard", className='text-center my-4 display-4')
+        ])
+    ]),
 
     # KANADA-SPOTLIGHT SEKTION
-    html.Div([
-        html.Div([
-            html.H2("Spotlight: Kanada i 3D"),
+    dbc.Card([
+        dbc.CardHeader([
+            html.H2("Spotlight: Kanada i 3D", className='mb-0')
+        ]),
+        dbc.CardBody([
             html.P(
                 "Utforska kanadensiska idrottares fysiska profiler. Välj säsong, filtrera på medaljörer och dra i tidsreglaget för att se hur atleternas ålder, längd och vikt förändras över åren.",
-                className='section-description'
-            )
-        ], className='section-header'),
-        html.Div([
-            html.Div([
-                html.Div([
-                    html.Div([
-                        html.Label("Välj säsong"),
-                        dcc.RadioItems(
-                            id='canada-season-filter',
-                            options=[
-                                {'label': 'Alla spel', 'value': 'All'},
-                                {'label': 'Sommarspel', 'value': 'Summer'},
-                                {'label': 'Vinterspel', 'value': 'Winter'}
-                            ],
-                            value='All',
-                            className='radio-group'
-                        )
-                    ], className='control-card'),
-                    html.Div([
-                        html.Label("Vilka idrottare ska visas?"),
-                        dcc.RadioItems(
-                            id='canada-medal-filter',
-                            options=[
-                                {'label': 'Alla deltagare', 'value': 'all'},
-                                {'label': 'Endast medaljörer', 'value': 'medal'}
-                            ],
-                            value='medal',
-                            className='radio-group'
-                        )
-                    ], className='control-card')
-                ], className='control-panel'),
-                html.Div([
-                    html.Label("Tidsperiod"),
-                    dcc.RangeSlider(
-                        id='canada-year-range',
-                        min=year_min,
-                        max=year_max,
-                        value=[max(1920, year_min), year_max],
-                        allowCross=False,
-                        marks=year_marks,
-                        tooltip={'placement': 'bottom', 'always_visible': False}
-                    )
-                ], className='slider-card'),
-                html.P(
-                    "Axlar: X visar ålder (år), Y visar längd (cm) och Z visar vikt (kg). Animeringen bläddrar år för år – tryck play för att följa utvecklingen.",
-                    className='axis-note'
-                )
-            ], className='section-column section-column--info'),
-            html.Div([
-                html.Div(dcc.Graph(id='canada-3d-profile'), className='graph-card')
-            ], className='section-column section-column--visual')
-        ], className='section-content section-content--split')
-    ], className='section highlight-section'),
+                className='lead'
+            ),
+            dbc.Row([
+                # Kontroller (vänster kolumn)
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.Label("Välj säsong", className='fw-bold'),
+                            dcc.RadioItems(
+                                id='canada-season-filter',
+                                options=[
+                                    {'label': 'Alla spel', 'value': 'All'},
+                                    {'label': 'Sommarspel', 'value': 'Summer'},
+                                    {'label': 'Vinterspel', 'value': 'Winter'}
+                                ],
+                                value='All',
+                                labelClassName='d-block mb-2'
+                            )
+                        ])
+                    ], className='mb-3'),
+                    
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.Label("Vilka idrottare ska visas?", className='fw-bold'),
+                            dcc.RadioItems(
+                                id='canada-medal-filter',
+                                options=[
+                                    {'label': 'Alla deltagare', 'value': 'all'},
+                                    {'label': 'Endast medaljörer', 'value': 'medal'}
+                                ],
+                                value='medal',
+                                labelClassName='d-block mb-2'
+                            )
+                        ])
+                    ], className='mb-3'),
+                    
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.Label("Tidsperiod", className='fw-bold mb-3'),
+                            dcc.RangeSlider(
+                                id='canada-year-range',
+                                min=year_min,
+                                max=year_max,
+                                value=[max(1920, year_min), year_max],
+                                allowCross=False,
+                                marks=year_marks,
+                                tooltip={'placement': 'bottom', 'always_visible': False}
+                            )
+                        ])
+                    ], className='mb-3'),
+                    
+                    dbc.Alert([
+                        html.I(className='fas fa-info-circle me-2'),
+                        "Axlar: X visar ålder (år), Y visar längd (cm) och Z visar vikt (kg). Animeringen bläddrar år för år – tryck play för att följa utvecklingen."
+                    ], color='info', className='mt-3')
+                ], md=4),
+                
+                # Graf (höger kolumn)
+                dbc.Col([
+                    dcc.Graph(id='canada-3d-profile', style={'height': '600px'})
+                ], md=8)
+            ])
+        ])
+    ], className='mb-4 shadow'),
     
     # LAND-ANALYS SEKTION
-    html.Div([
-        html.Div([
-            html.H2("Uppgift 1: Landstatistik"),
+    dbc.Card([
+        dbc.CardHeader([
+            html.H2("Uppgift 1: Landstatistik", className='mb-0')
+        ]),
+        dbc.CardBody([
             html.P(
                 "Visualisera medaljfördelning och utveckling för det valda landet.",
-                className='section-description'
-            )
-        ], className='section-header'),
-        dcc.Dropdown(
-            id='country-dropdown',
-            options=[{'label': noc, 'value': noc} for noc in sorted(df['NOC'].unique())],
-            value='CAN',  # Kanada
-            className='dropdown'
-        ),
-        html.P(
-            "Axlarna anger medaljranken per sport, antal medaljer per spel, åldersfördelningen samt medaljtypernas proportioner för det valda landet.",
-            className='axis-note'
-        ),
-        html.Div([
-            html.Div(dcc.Graph(id='medals-by-sport'), className='graph-card'),
-            html.Div(dcc.Graph(id='medals-per-year'), className='graph-card'),
-            html.Div(dcc.Graph(id='age-histogram'), className='graph-card'),
-            html.Div(dcc.Graph(id='medal-types'), className='graph-card')
-        ], className='graph-grid')
-    ], className='section'),
+                className='lead'
+            ),
+            dbc.Row([
+                dbc.Col([
+                    html.Label("Välj land (NOC)", className='fw-bold'),
+                    dcc.Dropdown(
+                        id='country-dropdown',
+                        options=[{'label': noc, 'value': noc} for noc in sorted(df['NOC'].unique())],
+                        value='CAN',
+                        className='mb-3'
+                    )
+                ], md=6)
+            ]),
+            dbc.Alert([
+                html.I(className='fas fa-chart-bar me-2'),
+                "Axlarna anger medaljranken per sport, antal medaljer per spel, åldersfördelningen samt medaljtypernas proportioner för det valda landet."
+            ], color='secondary'),
+            dbc.Row([
+                dbc.Col([dcc.Graph(id='medals-by-sport')], md=6, className='mb-3'),
+                dbc.Col([dcc.Graph(id='medals-per-year')], md=6, className='mb-3'),
+                dbc.Col([dcc.Graph(id='age-histogram')], md=6, className='mb-3'),
+                dbc.Col([dcc.Graph(id='medal-types')], md=6, className='mb-3')
+            ])
+        ])
+    ], className='mb-4 shadow'),
     
     # SPORT-ANALYS SEKTION
-    html.Div([
-        html.Div([
-            html.H2("Uppgift 2: Sportstatistik"),
+    dbc.Card([
+        dbc.CardHeader([
+            html.H2("Uppgift 2: Sportstatistik", className='mb-0')
+        ]),
+        dbc.CardBody([
             html.P(
                 "Följ medaljer, åldrar och könsfördelning inom vald sport.",
-                className='section-description'
-            )
-        ], className='section-header'),
-        dcc.Dropdown(
-            id='sport-dropdown',
-            options=[{'label': sport, 'value': sport} for sport in sorted(df['Sport'].unique())],
-            value='Swimming',
-            className='dropdown'
-        ),
-        html.P(
-            "Axlarna beskriver medaljer per land (x = medaljer, y = land), åldersfördelning (x = ålder i år, y = antal idrottare), könsfördelning samt medaljtyper inom vald sport.",
-            className='axis-note'
-        ),
-        html.Div([
-            html.Div(dcc.Graph(id='sport-medals'), className='graph-card'),
-            html.Div(dcc.Graph(id='sport-ages'), className='graph-card'),
-            html.Div(dcc.Graph(id='sport-gender'), className='graph-card'),
-            html.Div(dcc.Graph(id='sport-medal-types'), className='graph-card')
-        ], className='graph-grid')
-    ], className='section'),
+                className='lead'
+            ),
+            dbc.Row([
+                dbc.Col([
+                    html.Label("Välj sport", className='fw-bold'),
+                    dcc.Dropdown(
+                        id='sport-dropdown',
+                        options=[{'label': sport, 'value': sport} for sport in sorted(df['Sport'].unique())],
+                        value='Swimming',
+                        className='mb-3'
+                    )
+                ], md=6)
+            ]),
+            dbc.Alert([
+                html.I(className='fas fa-running me-2'),
+                "Axlarna beskriver medaljer per land (x = medaljer, y = land), åldersfördelning (x = ålder i år, y = antal idrottare), könsfördelning samt medaljtyper inom vald sport."
+            ], color='secondary'),
+            dbc.Row([
+                dbc.Col([dcc.Graph(id='sport-medals')], md=6, className='mb-3'),
+                dbc.Col([dcc.Graph(id='sport-ages')], md=6, className='mb-3'),
+                dbc.Col([dcc.Graph(id='sport-gender')], md=6, className='mb-3'),
+                dbc.Col([dcc.Graph(id='sport-medal-types')], md=6, className='mb-3')
+            ])
+        ])
+    ], className='mb-4 shadow'),
 
     # GLOBAL ANIMERING SEKTION
-    html.Div([
-        html.Div([
-            html.H2("Global Medaljracet – Animerad översikt"),
+    dbc.Card([
+        dbc.CardHeader([
+            html.H2("Global Medaljracet – Animerad översikt", className='mb-0')
+        ]),
+        dbc.CardBody([
             html.P(
                 "Se hur världens främsta nationslag tävlar om medaljer över tid. Animeringen uppdateras år för år – tryck play för att starta racet.",
-                className='section-description'
-            )
-        ], className='section-header'),
-        html.Div([
-            html.Div([
-                html.Div([
-                    html.Div([
-                        html.Label("Säsong"),
-                        dcc.RadioItems(
-                            id='global-season-filter',
-                            options=[
-                                {'label': 'Alla spel', 'value': 'All'},
-                                {'label': 'Sommarspel', 'value': 'Summer'},
-                                {'label': 'Vinterspel', 'value': 'Winter'}
-                            ],
-                            value='Summer',
-                            className='radio-group'
-                        )
-                    ], className='control-card'),
-                    html.Div([
-                        html.Label("Visa topp NOC per år"),
-                        dcc.Slider(
-                            id='global-top-n-slider',
-                            min=5,
-                            max=15,
-                            step=1,
-                            value=8,
-                            marks={i: str(i) for i in range(5, 16, 2)}
-                        )
-                    ], className='control-card')
-                ], className='control-panel'),
-                html.P(
-                    "Axlar: Y listar NOC-koder (länder) och X visar antal medaljer det året. Play-knappen låter dig följa utvecklingen över alla spel.",
-                    className='axis-note'
-                )
-            ], className='section-column section-column--info'),
-            html.Div([
-                html.Div(dcc.Graph(id='global-medal-race'), className='graph-card')
-            ], className='section-column section-column--visual')
-        ], className='section-content section-content--split')
-    ], className='section')
+                className='lead'
+            ),
+            dbc.Row([
+                # Kontroller
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.Label("Säsong", className='fw-bold'),
+                            dcc.RadioItems(
+                                id='global-season-filter',
+                                options=[
+                                    {'label': 'Alla spel', 'value': 'All'},
+                                    {'label': 'Sommarspel', 'value': 'Summer'},
+                                    {'label': 'Vinterspel', 'value': 'Winter'}
+                                ],
+                                value='Summer',
+                                labelClassName='d-block mb-2'
+                            )
+                        ])
+                    ], className='mb-3'),
+                    
+                    dbc.Card([
+                        dbc.CardBody([
+                            html.Label("Visa topp NOC per år", className='fw-bold mb-3'),
+                            dcc.Slider(
+                                id='global-top-n-slider',
+                                min=5,
+                                max=15,
+                                step=1,
+                                value=8,
+                                marks={i: str(i) for i in range(5, 16, 2)}
+                            )
+                        ])
+                    ], className='mb-3'),
+                    
+                    dbc.Alert([
+                        html.I(className='fas fa-trophy me-2'),
+                        "Axlar: Y listar NOC-koder (länder) och X visar antal medaljer det året. Play-knappen låter dig följa utvecklingen över alla spel."
+                    ], color='info')
+                ], md=4),
+                
+                # Graf
+                dbc.Col([
+                    dcc.Graph(id='global-medal-race', style={'height': '600px'})
+                ], md=8)
+            ])
+        ])
+    ], className='mb-4 shadow'),
     
-], className='container')
+    # Footer
+    dbc.Row([
+        dbc.Col([
+            html.Hr(),
+            html.P(
+                "Olympic Games Analysis Dashboard | Data från historiska olympiska spel",
+                className='text-center text-muted mb-4'
+            )
+        ])
+    ])
+    
+], fluid=True, className='py-4')
 
 
-# CALLBACKS - Interaktivitet
-# Dash callback pattern for interactive updates
-# Reference: Plotly Dash documentation - https://dash.plotly.com/basic-callbacks
+# CALLBACKS - Interaktivitet (samma som tidigare)
 
 @app.callback(
     [Output('medals-by-sport', 'figure'),
@@ -210,7 +266,6 @@ app.layout = html.Div([
 def update_country_plots(country):
     """Uppdaterar alla land-specifika visualiseringar"""
     
-    # Top sports
     top_sports = analyzer.top_sports_by_medals(country)
     top_sports_df = top_sports.reset_index()
     top_sports_df.columns = ['Sport', 'Medals']
@@ -220,7 +275,7 @@ def update_country_plots(country):
         y='Sport',
         orientation='h',
         color='Medals',
-        color_continuous_scale='viridis',  # Color-blind friendly palette - Plotly Express
+        color_continuous_scale='viridis',
         title=f'{country} - Top {len(top_sports)} sporter med flest medaljer',
         labels={'Medals': 'Antal medaljer', 'Sport': 'Sport'}
     )
@@ -231,7 +286,6 @@ def update_country_plots(country):
         coloraxis_colorbar=dict(title="Medaljer")
     )
     
-    # Medals per Olympics
     medals_year = analyzer.medals_per_olympics(country)
     medals_year_df = medals_year.reset_index()
     medals_year_df.columns = ['Year', 'Medals']
@@ -254,7 +308,6 @@ def update_country_plots(country):
         yaxis_title="Antal medaljer"
     )
     
-    # Age histogram
     ages = analyzer.age_distribution(country)
     fig3 = px.histogram(
         ages, 
@@ -269,7 +322,6 @@ def update_country_plots(country):
         yaxis_title="Antal idrottare"
     )
     
-    # Medal types
     medal_stats = analyzer.get_medal_statistics(country)
     fig4 = px.pie(
         values=medal_stats.values,
@@ -293,14 +345,12 @@ def update_sport_plots(sport):
     """Uppdaterar alla sport-specifika visualiseringar"""
     
     if not sport:
-        # Returnera tomma figurer om ingen sport vald
         empty_fig = go.Figure()
         empty_fig.add_annotation(text="Välj en sport", showarrow=False)
         return empty_fig, empty_fig, empty_fig, empty_fig
     
     analysis = analyzer.sport_analysis(sport)
     
-    # Medal distribution by country
     medal_countries = analysis['medal_countries'].head(10)
     fig1 = px.bar(
         x=medal_countries.values,
@@ -318,7 +368,6 @@ def update_sport_plots(sport):
         coloraxis_colorbar=dict(title="Medaljer")
     )
     
-    # Age distribution
     age_dist = analysis['age_distribution']
     fig2 = px.histogram(
         age_dist, 
@@ -333,7 +382,6 @@ def update_sport_plots(sport):
         yaxis_title="Antal idrottare"
     )
     
-    # Gender split
     gender_split = analysis['gender_split']
     fig3 = px.pie(
         values=gender_split.values,
@@ -343,7 +391,6 @@ def update_sport_plots(sport):
     )
     fig3.update_layout(legend_title_text="Kön")
     
-    # Medal types
     medal_types = analysis['medal_types']
     fig4 = px.pie(
         values=medal_types.values,
@@ -387,13 +434,23 @@ def update_canada_3d(season, medal_filter, year_range):
         return fig
 
     color_dimension = 'Medal' if medal_only else 'Sport'
-    hover_fields = {
-        'Sport': True,
-        'Event': True,
-        'Year': True,
-        'Season': True,
-        'Medal': True,
-        'Sex': True
+
+    profile_df = profile_df.copy()
+    medal_display = profile_df['Medal'].fillna('Ingen medalj')
+    size_map = {
+        'Gold': 18,
+        'Silver': 14,
+        'Bronze': 10,
+        'Ingen medalj': 7
+    }
+    profile_df['MarkerSize'] = medal_display.map(size_map).fillna(9)
+    profile_df['ColorDimension'] = medal_display if color_dimension == 'Medal' else profile_df[color_dimension]
+
+    color_map = {
+        'Gold': '#FFD700',
+        'Silver': '#C0C0C0',
+        'Bronze': '#CD7F32',
+        'Ingen medalj': '#264653'
     }
 
     fig = px.scatter_3d(
@@ -401,27 +458,42 @@ def update_canada_3d(season, medal_filter, year_range):
         x='Age',
         y='Height',
         z='Weight',
-        color=color_dimension,
-        size='Age',
-        hover_data=hover_fields,
+        color='ColorDimension',
+        size='MarkerSize',
+        symbol='Season',
         animation_frame='Year',
-        animation_group='ID',
-        title="Kanada – Atletprofil i 3D över tid",
-        labels={
-            'Age': 'Ålder (år)',
-            'Height': 'Längd (cm)',
-            'Weight': 'Vikt (kg)'
-        }
+        hover_name='Event',
+        hover_data={
+            'Sport': True,
+            'Event': False,
+            'Year': True,
+            'Season': True,
+            'Medal': True,
+            'Sex': True,
+            'Age': ':.0f',
+            'Height': ':.0f',
+            'Weight': ':.0f'
+        },
+        title="Kanada – 3D-profil (Ålder, Längd, Vikt över tid)",
+        color_discrete_map=color_map if color_dimension == 'Medal' else None
     )
 
+    fig.update_traces(marker=dict(opacity=0.88, line=dict(width=0.6, color='rgba(15,15,15,0.6)')))
     fig.update_layout(
         scene=dict(
             xaxis_title="Ålder (år)",
             yaxis_title="Längd (cm)",
-            zaxis_title="Vikt (kg)"
+            zaxis_title="Vikt (kg)",
+            xaxis=dict(backgroundcolor='rgba(7,7,12,0.15)', gridcolor='rgba(255,255,255,0.08)'),
+            yaxis=dict(backgroundcolor='rgba(7,7,12,0.1)', gridcolor='rgba(255,255,255,0.08)'),
+            zaxis=dict(backgroundcolor='rgba(7,7,12,0.05)', gridcolor='rgba(255,255,255,0.08)')
         ),
-        legend_title_text="Medaljtyp" if medal_only else "Sport",
-        margin=dict(l=0, r=0, b=0, t=60)
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        margin=dict(l=0, r=0, t=60, b=0),
+        scene_camera=dict(
+            eye=dict(x=1.45, y=1.45, z=0.85)
+        )
     )
 
     return fig
@@ -473,4 +545,3 @@ def update_global_medal_race(season, top_n):
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8050)
-
