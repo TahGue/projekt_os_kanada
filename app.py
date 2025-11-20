@@ -4,4 +4,5 @@ from src.dashboard import app as dash_app
 app = dash_app.server
 
 if __name__ == "__main__":
-    dash_app.run_server(host="0.0.0.0", port=8050, debug=False)
+    # Dash 3.x uses `run` instead of the older `run_server` API
+    dash_app.run(host="0.0.0.0", port=8050, debug=False)
