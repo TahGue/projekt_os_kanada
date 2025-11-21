@@ -7,6 +7,7 @@ import pandas as pd
 # Documentation: https://numpy.org/doc/
 # Version: 1.26.2
 import numpy as np
+from typing import Dict, Optional, Union
 
 
 class OlympicAnalyzer:
@@ -17,7 +18,7 @@ class OlympicAnalyzer:
     Denna klass tillhandahåller modulära metoder för olika typer av analyser.
     """
     
-    def __init__(self, df):
+    def __init__(self, df: pd.DataFrame):
         """
         Initierar analysern med en DataFrame
         
@@ -26,7 +27,7 @@ class OlympicAnalyzer:
         """
         self.df = df.copy()
     
-    def top_sports_by_medals(self, country_code, top_n=10):
+    def top_sports_by_medals(self, country_code: str, top_n: int = 10) -> pd.Series:
         """
         Sporter med flest medaljer för ett land
         
@@ -45,7 +46,7 @@ class OlympicAnalyzer:
         ]
         return country_data['Sport'].value_counts().head(top_n)
     
-    def medals_per_olympics(self, country_code):
+    def medals_per_olympics(self, country_code: str) -> pd.Series:
         """
         Antal medaljer per olympiad för ett land
         
@@ -60,7 +61,7 @@ class OlympicAnalyzer:
             (self.df['Medal'].notna())
         ].groupby('Year').size()
     
-    def age_distribution(self, country_code):
+    def age_distribution(self, country_code: str) -> pd.Series:
         """
         Åldersfördelning för ett lands idrottare
         
@@ -75,7 +76,7 @@ class OlympicAnalyzer:
             (self.df['Age'].notna())
         ]['Age']
     
-    def sport_analysis(self, sport_name):
+    def sport_analysis(self, sport_name: str) -> Dict[str, Union[pd.Series, pd.DataFrame]]:
         """
         Djupanalys för en specifik sport
         
@@ -98,7 +99,7 @@ class OlympicAnalyzer:
             'medal_types': sport_df[sport_df['Medal'].notna()]['Medal'].value_counts()
         }
     
-    def get_medal_statistics(self, country_code):
+    def get_medal_statistics(self, country_code: str) -> pd.Series:
         """
         Detaljerad medaljstatistik för ett land (guld, silver, brons)
         
@@ -114,7 +115,7 @@ class OlympicAnalyzer:
         ]
         return country_medals['Medal'].value_counts()
     
-    def get_top_athletes_by_medals(self, country_code, top_n=10):
+    def get_top_athletes_by_medals(self, country_code: str, top_n: int = 10) -> pd.Series:
         """
         Toppidrottare (baserat på hash) med flest medaljer för ett land
         
@@ -131,7 +132,7 @@ class OlympicAnalyzer:
         ]
         return country_medals['Name_hash'].value_counts().head(top_n)
 
-    def country_athlete_profile(self, country_code='CAN', season=None, medal_only=False):
+    def country_athlete_profile(self, country_code: str = 'CAN', season: Optional[str] = None, medal_only: bool = False) -> pd.DataFrame:
         """
         Returnerar dataprofil för ett lands atleter (används för 3D-visualiseringar)
 
@@ -162,7 +163,7 @@ class OlympicAnalyzer:
 
         return data
 
-    def global_medal_race(self, season=None, top_n=10):
+    def global_medal_race(self, season: Optional[str] = None, top_n: int = 10) -> pd.DataFrame:
         """
         Skapar en global medaljtabell per år för animerade visualiseringar.
 

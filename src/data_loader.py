@@ -6,9 +6,9 @@ import pandas as pd
 # Python standard library hashlib for SHA-256 hashing
 # Documentation: https://docs.python.org/3/library/hashlib.html
 import hashlib
+import os
 
-
-def load_and_anonymize_data(filepath):
+def load_and_anonymize_data(filepath: str) -> pd.DataFrame:
     """
     Laddar data och anonymiserar idrottarnas namn med SHA256-hash
     
@@ -20,7 +20,13 @@ def load_and_anonymize_data(filepath):
         
     Returns:
         pd.DataFrame: DataFrame med anonymiserade namn (hashade)
+        
+    Raises:
+        FileNotFoundError: Om filen inte hittas
     """
+    if not os.path.exists(filepath):
+        raise FileNotFoundError(f"Filen hittades inte: {filepath}")
+
     df = pd.read_csv(filepath)
     
     # Anonymisera namn - UNIK HASH FÖR VARJE NAMN
@@ -37,7 +43,7 @@ def load_and_anonymize_data(filepath):
     return df
 
 
-def get_country_stats(df, country_code='CAN'):
+def get_country_stats(df: pd.DataFrame, country_code: str = 'CAN') -> pd.DataFrame:
     """
     Extraherar statistik för ett specifikt land
     
