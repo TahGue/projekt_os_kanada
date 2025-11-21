@@ -7,7 +7,7 @@ def sample_data():
     data = {
         'ID': [1, 2, 3, 4, 5],
         'Name': ['Athlete One', 'Athlete Two', 'Athlete Three', 'Athlete Four', 'Athlete Five'],
-        'Sex': ['M', 'F', 'M', 'F', 'M'],
+        'Sex': ['M', 'F', 'F', 'F', 'M'],
         'Age': [25, 30, 22, 28, 24],
         'Height': [180, 170, 175, 165, 185],
         'Weight': [80, 60, 70, 55, 85],

@@ -75,6 +75,18 @@ class OlympicAnalyzer:
             (self.df['NOC'] == country_code) & 
             (self.df['Age'].notna())
         ]['Age']
+
+    def gender_distribution(self, country_code: str) -> pd.Series:
+        """
+        Könsfördelning för ett lands idrottare
+
+        Args:
+            country_code (str): NOC-kod för landet
+
+        Returns:
+            pd.Series: Serie med antal män och kvinnor
+        """
+        return self.df[self.df['NOC'] == country_code]['Sex'].value_counts()
     
     def sport_analysis(self, sport_name: str) -> Dict[str, Union[pd.Series, pd.DataFrame]]:
         """

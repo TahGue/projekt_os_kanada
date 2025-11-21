@@ -138,6 +138,7 @@ app.layout = dbc.Container([
     dbc.Row([
         dbc.Col(draw_card(dcc.Graph(id='age-histogram')), width=12, md=4, className="mb-3"),
         dbc.Col(draw_card(dcc.Graph(id='medal-types')), width=12, md=4, className="mb-3"),
+        dbc.Col(draw_card(dcc.Graph(id='gender-distribution')), width=12, md=4, className="mb-3"),
         
         # --- HÄR ÄR MATPLOTLIB-GRAFEN ---
         dbc.Col(draw_card([
@@ -255,7 +256,8 @@ def update_matplotlib_plot(country):
     [Output('medals-by-sport', 'figure'),
      Output('medals-per-year', 'figure'),
      Output('age-histogram', 'figure'),
-     Output('medal-types', 'figure')],
+     Output('medal-types', 'figure'),
+     Output('gender-distribution', 'figure')],
     Input('country-dropdown', 'value')
 )
 def update_country_plots(country):
@@ -288,7 +290,13 @@ def update_country_plots(country):
                   color_discrete_map={'Gold': '#FFD700', 'Silver': '#C0C0C0', 'Bronze': '#CD7F32'})
     fig4.update_layout(margin=dict(l=0, r=0, t=40, b=0))
     
-    return fig1, fig2, fig3, fig4
+    # Gender distribution
+    gender_stats = analyzer.gender_distribution(country)
+    fig5 = px.pie(values=gender_stats.values, names=gender_stats.index, title='Könsfördelning',
+                  color_discrete_map={'M': '#4ECDC4', 'F': '#FF6B6B'})
+    fig5.update_layout(margin=dict(l=0, r=0, t=40, b=0))
+
+    return fig1, fig2, fig3, fig4, fig5
 
 @app.callback(
     [Output('sport-medals', 'figure'),

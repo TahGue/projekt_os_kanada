@@ -25,6 +25,11 @@ def test_age_distribution(analyzer):
     assert 25 in ages.values
     assert 22 in ages.values
 
+def test_gender_distribution(analyzer):
+    gender_dist = analyzer.gender_distribution('CAN')
+    assert gender_dist['M'] == 1
+    assert gender_dist['F'] == 1
+
 def test_sport_analysis(analyzer):
     analysis = analyzer.sport_analysis('Swimming')
     assert isinstance(analysis, dict)
