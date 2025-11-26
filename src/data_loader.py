@@ -9,21 +9,7 @@ import hashlib
 import os
 
 def load_and_anonymize_data(filepath: str) -> pd.DataFrame:
-    """
-    Laddar data och anonymiserar idrottarnas namn med SHA256-hash
     
-    Krav: Anonymisera kolumnen med idrottarnas namn med hashfunktionen
-    Detta följer GDPR-principer för personuppgiftshantering.
-    
-    Args:
-        filepath (str): Sökväg till CSV-filen
-        
-    Returns:
-        pd.DataFrame: DataFrame med anonymiserade namn (hashade)
-        
-    Raises:
-        FileNotFoundError: Om filen inte hittas
-    """
     if not os.path.exists(filepath):
         raise FileNotFoundError(f"Filen hittades inte: {filepath}")
 

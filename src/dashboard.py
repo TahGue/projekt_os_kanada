@@ -43,11 +43,7 @@ def draw_section_header(title, desc):
     ], className="mb-4")
 
 def draw_card(content, title=None, **card_kwargs):
-    """Create a Bootstrap card with optional title and forward any card kwargs.
-
-    Accepts arbitrary keyword arguments (e.g., className) so callers can customize
-    the outer card element without changing this helper.
-    """
+    
     # default classes, allow overrides via card_kwargs
     defaults = {"className": "h-100 shadow-sm"}
     # Merge defaults with provided kwargs (kwargs override defaults)
@@ -143,7 +139,7 @@ app.layout = dbc.Container([
         # --- HÄR ÄR MATPLOTLIB-GRAFEN ---
         dbc.Col(draw_card([
             html.H5("Matplotlib: Längd vs Vikt (Boxplot)", className="card-title"),
-            # Här injicerar vi bilden
+           
             html.Img(id='matplotlib-static-plot', style={'width': '100%', 'height': 'auto'})
         ]), width=12, md=4, className="mb-3"),
     ], className="mb-5"),
@@ -211,10 +207,7 @@ app.layout = dbc.Container([
     Input('country-dropdown', 'value')
 )
 def update_matplotlib_plot(country):
-    """
-    Genererar en statisk Matplotlib-figur och returnerar den som en bildsträng.
-    Vi visualiserar fördelning av Vikt och Längd för det valda landet.
-    """
+    
     # Filtrera data
     country_df = df[df['NOC'] == country].dropna(subset=['Height', 'Weight'])
     
